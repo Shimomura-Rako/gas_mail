@@ -45,18 +45,20 @@
 
 
 <div class="step">
-    <h2>1.5 スプレッドシートIDをメモする</h2>
+    <h2>2. スプレッドシートIDをメモする</h2>
     <p>プログラムを動かすために、このシートの「住所（ID）」が必要です。</p>
     <p class="pink-text">【IDの見つけ方】</p>
     <p>上のURLを見てみて、<code>/d/</code> と <code>/edit</code> の間にある、長〜い英数字がIDです！</p>
     
-    <img src="step1_3_id.png" alt="スプレッドシートIDの場所" style="width: 100%; max-width: 600px; display: block; margin: 10px auto; border: 2px solid #ffc1e3; border-radius: 8px;">
+    <img src="sheet_id.png" alt="スプレッドシートIDの場所" style="width: 100%; max-width: 600px; display: block; margin: 10px auto; border: 2px solid #ffc1e3; border-radius: 8px;">
     
-    <p>これをコピーして、あとでプログラムに貼り付けます。。</p>
+    <p>これをコピーして、あとでプログラムに貼り付けます。</p>
 </div>
 
+
+
     <div class="step">
-        <h2>2. プログラムを貼り付ける</h2>
+        <h2>3. プログラムを貼り付ける</h2>
         <p>1. スプレッドシートのメニューから「拡張機能」→「Apps Script」を選んでクリック。</p>
         <img src="extend2.png" alt="GASの開き方">
         <p>2. GASの画面が開きます。</p>
@@ -69,11 +71,20 @@
         
         <p>5. GASに貼り付け（Ctrl + V）てね！</p>
        <img src="gas_paste.png" alt="GASの画面">
+</div>
 
-        <p class="pink-text">4. コードの一番上にある「メールアドレス」などを、自分のものに書き換えて保存します。</p>
-    </div>
-       <img src="change.png" alt="GASの画面">
+
+
     <div class="step">
+       <h2>4. GASのコードを自分用に修正する</h2>
+        <p>1.コードの一番上にある「シートID」「メールアドレス」を自分のものに書き換えます。</p>
+               <img src="change.png" alt="GASの画面">
+        <p>2.コードを保存します。</p>
+               <img src="save.png" alt="GASのコードを保存するボタン">
+
+</div>   
+
+
         <h2>3. 仕上げ（トリガー設定）</h2>
         <p>最後に<code>setupTrigger</code>という関数を選んで実行！これで自動監視がスタートします。</p>
     </div>
