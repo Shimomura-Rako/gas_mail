@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DMM英会話の講師ページを定期チェック! pamoka - チュートリアル</title>
+    <style>
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.8; color: #333; max-width: 800px; margin: auto; padding: 30px; background-color: #fff0f5; }
+        h1 { color: #d81b60; text-align: center; border-bottom: 3px solid #d81b60; padding-bottom: 10px; }
+        h2 { color: #ad1457; background: #fce4ec; padding: 10px; border-left: 5px solid #ad1457; margin-top: 30px; }
+        .step { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+        .pink-text { color: #d81b60; font-weight: bold; }
+        code { background: #eee; padding: 2px 5px; border-radius: 4px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h1>DMM英会話のお気に入り講師の空きレッスンをチェックできます。</h1>
+    <p>登録したアドレスに通知メールが届きます！<br>
+    このチュートリアルでは、GoogleのGAS(Google Apps Script)の設定方法を紹介します</p>
+
+    <div class="step">
+        <h2>1. スプレッドシートを準備する</h2>
+        <p>Googleスプレッドシートを新規作成して、1行目にこう入力します：</p>
+        <ul>
+            <li>A1セル：<code>講師番号</code></li>
+            <li>B1セル：<code>名前</code></li>
+            <li>C1セル：<code>予約可数</code></li>
+        </ul>
+    </div>
+
+    <div class="step">
+        <h2>2. プログラムを貼り付ける</h2>
+        <p>メニューの「拡張機能」→「Apps Script」を開いて、GASのコードを全部貼り付けて保存しましょう。</p>
+    </div>
+
+    <div class="step">
+        <h2>3. 仕上げ（トリガー設定）</h2>
+        <p>最後に<code>setupTrigger</code>という関数を選んで実行！これで自動監視がスタートします。</p>
+    </div>
+
+    <footer style="text-align: center; margin-top: 50px; color: #888;">
+        Created by pamoka
+    </footer>
+</body>
+</html>
+
