@@ -219,6 +219,7 @@ function setup() {
   }
 }
 
+
 function checkTeacherAvailability() {
   try {
     const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
@@ -241,31 +242,27 @@ function checkTeacherAvailability() {
         if (response.getResponseCode() !== 200) continue;
         const html = response.getContentText();
 
-        // 講師名の取得
+        // 【修正ポイント】講師名から「の講師詳細」を削除してキレイにする
         if (!teacherName || teacherName === "" || teacherName === "undefined" || teacherName.includes("講師詳細")) {
           const titleMatch = html.match(/<title>([\s\S]*?)\s-\sDMM英会話<\/title>/i);
-          teacherName = (titleMatch && titleMatch[1]) ? titleMatch[1].trim() : "講師 " + teacherId;
+          if (titleMatch && titleMatch[1]) {
+            teacherName = titleMatch[1].replace("の講師詳細", "").trim();
+          } else {
+            teacherName = "講師 " + teacherId;
+          }
           sheet.getRange(i + 1, 2).setValue(teacherName);
         }
 
-        // 全体の「予約可」をカウント
         const matches = html.match(/予約可/g);
         let rawCount = matches ? matches.length : 0;
+        let currentCount = Math.max(0, rawCount - 2);
 
-        // システム上の予備カウント(2個)を除外して実数を算出
-        let currentCount = rawCount - 2;
-        if (currentCount < 0) currentCount = 0;
-
-        // --- 通知判定（初回登録時と空き増加時） ---
         if (lastCount === null) {
-          // 初回登録時の通知
           sendNotification(teacherId, teacherName, currentCount, true);
         } else if (currentCount > lastCount) {
-          // 予約枠が増えた時の通知
           sendNotification(teacherId, teacherName, currentCount, false);
         }
 
-        // シートを更新
         sheet.getRange(i + 1, 3).setValue(currentCount);
         Utilities.sleep(1000);
 
@@ -282,7 +279,7 @@ function sendNotification(teacherId, teacherName, currentCount, isFirstTime) {
     message = teacherName + "先生（ID:" + teacherId + "）の予約監視を開始しました。\n現在の空き状況：" + currentCount + "件\n\nページはこちら：\nhttps://eikaiwa.dmm.com/teacher/index/" + teacherId + "/";
   } else {
     subject = "【DMM通知】" + teacherName + "先生の空きが出ました";
-    message = teacherName + "先生の予約枠が追加されました。\n現在の空き：" + currentCount + "件\n\n詳細・予約はこちら：\nhttps://eikaiwa.dmm.com/teacher/index/" + teacherId + "/";
+    message = teacherName + "先生の予約枠が追加されました！\n現在の空き状況：" + currentCount + "件\n\n予約はこちら：\nhttps://eikaiwa.dmm.com/teacher/index/" + teacherId + "/";
   }
   
   GmailApp.sendEmail(NOTIFICATION_EMAIL, subject, message);
@@ -294,6 +291,9 @@ function setupTrigger() {
   ScriptApp.newTrigger("checkTeacherAvailability").timeBased().everyMinutes(CHECK_INTERVAL_MINUTES).create();
   Logger.log("⏰ 定期監視を開始しました。");
 }
+
+
+
 </textarea>
 
     <script>
