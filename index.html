@@ -11,6 +11,9 @@
         .step { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
         .pink-text { color: #d81b60; font-weight: bold; }
         code { background: #eee; padding: 2px 5px; border-radius: 4px; font-weight: bold; }
+        img { width: 100%; max-width: 500px; display: block; margin: 10px auto; border: 2px solid #ffc1e3; border-radius: 8px; }
+        .copy-btn { background-color: #d81b60; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1em; margin: 15px 0; transition: 0.3s; }
+        .copy-btn:hover { background-color: #ad1457; }
     </style>
 </head>
 <body>
@@ -19,42 +22,36 @@
     登録したアドレスに通知メールが届きます！<br>
     このチュートリアルでは、GoogleのGAS(Google Apps Script)の設定方法を紹介します</p>
 
-
-<div class="step">
+    <div class="step">
         <h2>0. 事前準備</h2>
-        <ul class="check-list">
+        <ul>
             <li><strong>Googleアカウント</strong>（持っていない人は <a href="https://accounts.google.com/signup" target="_blank">ここから無料で作成</a> してね！）</li>
             <li><strong>DMM英会話の講師番号</strong></li>
         </ul>
         <p style="font-size: 0.9em; color: #666;">※講師のプロフィールページのURLの一番最後にある数字です。下の画像を参考にしてね</p>
-        <img src="step0_teacher_id.png" alt="講師番号の確認方法" style="width: 100%; max-width: 500px; display: block; margin: 10px auto; border: 2px solid #ffc1e3; border-radius: 8px;">
+        <img src="step0_teacher_id.png" alt="講師番号の確認方法">
     </div>
 
-
-
-
-<div class="step">
+    <div class="step">
         <h2>1. スプレッドシートを準備する</h2>
         <p>まずは、データを記録する「台帳」を作ります。</p>
-        
         <p class="pink-text">【スプレッドシートの開き方】</p>
         <p>Googleの画面右上にある「点々のマーク」から、緑色の<strong>「スプレッドシート」</strong>を選んでね。</p>
-        
-        <img src="step1.jpg" alt="スプレッドシートの開き方" style="width: 100%; max-width: 300px; display: block; margin: 10px auto; border: 1px solid #ddd; border-radius: 8px;">
-
+        <img src="step1.jpg" alt="スプレッドシートの開き方">
         <p>開いたら「空白（＋マーク）」を押して新しいシートを作るだけで準備完了！</p>
-<img src="step1_2.png" alt="スプレッドシートの開き方２" style="width: 100%; max-width: 500px; display: block; margin: 10px auto; border: 2px solid>
-
+        <img src="step1_2.png" alt="スプレッドシートの開き方２">
+        <p class="pink-text">※シートには何も書かなくて大丈夫。</p>
     </div>
-
-
-
-
-
 
     <div class="step">
         <h2>2. プログラムを貼り付ける</h2>
-        <p>メニューの「拡張機能」→「Apps Script」を開いて、GASのコードを全部貼り付けて保存しましょう。</p>
+        <p>1. スプレッドシートのメニューから「拡張機能」→「Apps Script」を選んでね。</p>
+        <p>2. 下のボタンを押して、プログラムをコピーしてね。</p>
+        
+        <button class="copy-btn" onclick="copyGasCode()">コードをコピーする 📋</button>
+        
+        <p>3. 元から書いてある文字を全部消して、貼り付け（Ctrl + V）てね！</p>
+        <p class="pink-text">4. コードの一番上にある「メールアドレス」などを、自分のものに書き換えて保存してね。</p>
     </div>
 
     <div class="step">
@@ -65,6 +62,88 @@
     <footer style="text-align: center; margin-top: 50px; color: #888;">
         Created by pamoka
     </footer>
+
+    <textarea id="gasCodeHidden" style="position: absolute; left: -9999px;">
+// ==========================================
+// 設定セクション（ここだけ書き換えてね）
+// ==========================================
+const SHEET_ID = "ここにスプレッドシートのIDを貼ってね"; 
+const NOTIFICATION_EMAIL = "xxxxxxxxxxxxx@gmail.com（ここにあなたのメールアドレスを入れてね）"; 
+const CHECK_INTERVAL_MINUTES = 10; 
+const SHEET_NAME = "シート1";
+
+function setup() {
+  const sheet = SpreadsheetApp.openById(SHEET_ID).getSheets()[0];
+  if (sheet.getRange("A1").getValue() === "") {
+    sheet.getRange("A1:C1").setValues([["講師番号", "名前", "予約可数"]]);
+    sheet.getRange("A1:C1").setBackground("#ffe0f0").setFontWeight("bold");
+    Browser.msgBox("台帳の準備ができました！A列に講師番号を入力してね。");
+  }
+}
+
+function checkTeacherAvailability() {
+  try {
+    const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
+    const data = sheet.getDataRange().getValues();
+    for (let i = 1; i < data.length; i++) {
+      const teacherId = String(data[i][0]).trim();
+      let teacherName = String(data[i][1]).trim();
+      const lastCount = data[i][2] === "" ? null : Number(data[i][2]);
+      if (!teacherId || teacherId === "") continue; 
+      try {
+        const url = `https://eikaiwa.dmm.com/teacher/index/${teacherId}/`;
+        const response = UrlFetchApp.fetch(url, {
+          muteHttpExceptions: true,
+          headers: { "User-Agent": "Mozilla/5.0" },
+          timeout: 10000
+        });
+        if (response.getResponseCode() !== 200) continue;
+        const html = response.getContentText();
+        if (!teacherName || teacherName === "" || teacherName === "undefined") {
+          const titleMatch = html.match(/<title>([\s\S]*?)\s-\sDMM英会話<\/title>/i);
+          teacherName = (titleMatch && titleMatch[1]) ? titleMatch[1].trim() : "講師 " + teacherId;
+          sheet.getRange(i + 1, 2).setValue(teacherName);
+          sendRegistrationNotice(teacherId, teacherName);
+        }
+        const matches = html.match(/予約可/g);
+        const currentCount = matches ? matches.length : 0;
+        if (lastCount !== null && currentCount > lastCount) {
+          sendNotification(teacherId, teacherName, lastCount, currentCount);
+        }
+        sheet.getRange(i + 1, 3).setValue(currentCount);
+        Utilities.sleep(1000);
+      } catch (e) { console.error(e); }
+    }
+  } catch (e) { Logger.log(e); }
+}
+
+function sendRegistrationNotice(teacherId, teacherName) {
+  const subject = `【監視開始】${teacherName}をリストに登録したよ！`;
+  const message = `新しい講師「${teacherName}（${teacherId}）」の10分おき監視を開始しました！`;
+  GmailApp.sendEmail(NOTIFICATION_EMAIL, subject, message);
+}
+
+function sendNotification(teacherId, teacherName, prevCount, currentCount) {
+  const subject = `【DMM英会話】${teacherName}（${teacherId}）レッスン開講通知`;
+  const message = `${teacherName}にレッスン予約枠が追加されました！\n前回: ${prevCount}件 → 現在: ${currentCount}件\nhttps://eikaiwa.dmm.com/teacher/index/${teacherId}/`;
+  GmailApp.sendEmail(NOTIFICATION_EMAIL, subject, message);
+}
+
+function setupTrigger() {
+  const triggers = ScriptApp.getProjectTriggers();
+  triggers.forEach(trigger => ScriptApp.deleteTrigger(trigger));
+  ScriptApp.newTrigger("checkTeacherAvailability").timeBased().everyMinutes(CHECK_INTERVAL_MINUTES).create();
+  Logger.log("⏰ 監視を開始しました！");
+}</textarea>
+
+    <script>
+        function copyGasCode() {
+            const copyText = document.getElementById("gasCodeHidden");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            document.execCommand("copy");
+            alert("コピーしました！Apps Scriptの画面に貼り付けてね。");
+        }
+    </script>
 </body>
 </html>
-
