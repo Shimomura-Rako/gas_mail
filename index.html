@@ -91,15 +91,7 @@
         </div>
 
         <div class="step">
-            <h2>2. スプレッドシートIDを確認する（参考）</h2>
-            <p>※今回のバージョンでは、プログラムが自動で判別するのでメモするだけでOKです！</p>
-            <p class="pink-text">【IDの見つけ方】</p>
-            <p>シートのURLを見てみて、<code>/d/</code> と <code>/edit</code> の間にある、長〜い英数字がIDです！</p>
-            <img src="sheet_id.png" alt="スプレッドシートIDの場所">
-        </div>
-
-        <div class="step">
-            <h2>3. プログラムを貼り付ける</h2>
+            <h2>2. プログラムを貼り付ける</h2>
             <p>1. スプレッドシートのメニューから「拡張機能」→「Apps Script」を選んでクリック。</p>
             <img src="extend2.png" alt="GASの開き方">
             <p>2. GASの画面が開きます。</p>
@@ -110,18 +102,14 @@
             <button class="copy-btn" onclick="copyGasCode()">コードをコピーする 📋</button>
             <p>5. GASに貼り付けます（ショートカット：Ctrl + V）。</p>
             <img src="gas_paste.png" alt="GASの画面">
-        </div>
-
-        <div class="step">
-            <h2>4. コードを保存する</h2>
-            <p class="pink-text">✨ 【新機能】コードを書き換える必要はありません！</p>
-            <p>今回のバージョンから、メールアドレスやIDをプログラムの中に書く必要がなくなりました。記号を消しちゃう心配もなし！</p>
-            <p>そのままフロッピーの形のボタンをクリックして保存してください。</p>
+            <p>6.コードを保存します。フロッピーの形のボタンをクリック。</p>
             <img src="save.png" alt="GASのコードを保存するボタン">
+            <p>7.スプレッドシートに移動し、⑨「準備完了」の表示が出ているのでOKをクリックします。</p>
+            <img src="tospreadsheet.png" alt="スプレッドシートに移動">
         </div>
 
         <div class="step">
-            <h2>5. プログラムの「初期設定」をする</h2>
+            <h2>3. プログラムの「初期設定」をする</h2>
             <p>1. 「デバッグ」の右隣にあるメニューから <code>setup</code> を選んで、「実行」ボタンを押してね。</p>
             <img src="programname.png" alt="プログラムの名前">        
             <img src="gas_setup_select.png" alt="setup関数の選択">
@@ -199,16 +187,31 @@
 function setup() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
   
-  // スプレッドシートのレイアウトを自動作成
-  sheet.getRange("A1").setValue("【設定】通知用メールアドレス：").setBackground("#f1f8e9").setFontWeight("bold");
-  sheet.getRange("B1").setBackground("#fff9c4").setBorder(true, true, true, true, false, false);
-  sheet.getRange("A2").setValue("※B1にメールアドレス、A5から講師番号を入力してください").setFontColor("#666").setFontSize(9);
+  // 列の幅を調整
+  sheet.setColumnWidth(1, 250); // A列：説明文
+  sheet.setColumnWidth(2, 300); // B列：メール/講師名
+  sheet.setColumnWidth(3, 150); // C列：予約可数
 
-  sheet.getRange("A4:C4").setValues([["講師番号", "名前", "予約可数"]]);
-  sheet.getRange("A4:C4").setBackground("#e8f5e9").setFontWeight("bold");
+  // 1行目：メールアドレス設定
+  sheet.getRange("A1").setValue("通知用メールアドレスを入力 →").setBackground("#e8f5e9").setFontWeight("bold");
+  const emailCell = sheet.getRange("B1");
+  emailCell.setValue("【ここにメールアドレスを入力】");
+  emailCell.setBackground("#fff0f0");
+  emailCell.setFontColor("#d32f2f");
+  emailCell.setBorder(true, true, true, true, false, false, "#d32f2f", SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
+
+  sheet.getRange("A2").setValue("※B1に入力したアドレスに通知が届きます。2行目はこのまま触らないでね。").setFontColor("#666").setFontSize(9);
+
+  // 4行目：見出し
+  sheet.getRange("A4:C4").setValues([["講師番号を入力", "講師名（自動入力）", "現在の予約可数（自動入力）"]]);
+  sheet.getRange("A4:C4").setBackground("#2e7d32").setFontColor("white").setFontWeight("bold");
   
-  Browser.msgBox("準備完了！\\nスプレッドシートを確認して、メールアドレスと講師番号を入力してください。");
+  // 入力エリアの装飾
+  sheet.getRange("A5:A25").setBackground("#f9f9f9").setBorder(true, true, true, true, false, false, "#ccc", SpreadsheetApp.BorderStyle.DOTTED);
+
+  Browser.msgBox("準備完了！ピンクの枠にメールアドレスを入力してください");
 }
+
 
 function checkTeacherAvailability() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
