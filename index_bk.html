@@ -1,177 +1,218 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>~pamoka~ DMM英会話 予約通知ツール（非公式）</title>
     <style>
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.8; color: #333; max-width: 800px; margin: auto; padding: 30px; background-color: #fff0f5; }
-        h1 { color: #d81b60; text-align: center; border-bottom: 3px solid #d81b60; padding-bottom: 10px; }
-        h2 { color: #ad1457; background: #fce4ec; padding: 10px; border-left: 5px solid #ad1457; margin-top: 30px; }
-        .step { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
-        .pink-text { color: #d81b60; font-weight: bold; }
+        /* 背景画像をbkg.pngに設定 */
+        body { 
+            font-family: 'Helvetica Neue', Arial, sans-serif; 
+            line-height: 1.8; 
+            color: #333; 
+            background-image: url('bkg.png'); 
+            background-size: cover; 
+            background-attachment: fixed; 
+            background-position: center;
+            margin: 0;
+            padding: 40px 20px; 
+            display: flex;
+            justify-content: center;
+        }
+
+        /* 記事本体：白いカード */
+        .container {
+            max-width: 1000px; 
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.95); 
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
+        }
+
+        /* タイトルと見出しの色をグリーンに変更 */
+        h1 { color: #2e7d32; text-align: center; border-bottom: 3px solid #2e7d32; padding-bottom: 10px; margin-top: 0; }
+        h2 { color: #1b5e20; background: #e8f5e9; padding: 10px; border-left: 5px solid #2e7d32; margin-top: 30px; }
+        
+        .step { 
+            background: #ffffff; 
+            padding: 20px; 
+            border-radius: 12px; 
+            margin-bottom: 20px; 
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* 強調テキストの色をグリーンに変更 */
+        .pink-text { color: #2e7d32; font-weight: bold; }
         code { background: #eee; padding: 2px 5px; border-radius: 4px; font-weight: bold; }
-        img { width: 100%; max-width: 500px; display: block; margin: 10px auto; border: 2px solid #ffc1e3; border-radius: 8px; }
-        .copy-btn { background-color: #d81b60; color: white; border: none; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1em; margin: 15px 0; transition: 0.3s; }
-        .copy-btn:hover { background-color: #ad1457; }
+        
+        /* 画像の枠線をグリーンに変更 */
+        img { width: 100%; max-width: 600px; display: block; margin: 15px auto; border: 2px solid #c8e6c9; border-radius: 8px; }
+        
+        /* コピーボタンの色をグリーンに変更 */
+        .copy-btn { 
+            background-color: #4caf50; color: white; border: none; padding: 12px 24px; 
+            border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1em; 
+            margin: 15px 0; transition: 0.3s; width: 100%; max-width: 300px; display: block; margin-left: auto; margin-right: auto;
+        }
+        .copy-btn:hover { background-color: #388e3c; }
+        
+        footer { text-align: center; margin-top: 50px; color: #888; font-size: 0.9em; }
     </style>
 </head>
+
+
+
+
+
+
+
 <body>
-    <h1>~pamoka~ DMM英会話 予約通知ツール（非公式）</h1>
-    <p>pamokaは、DMM英会話の講師ページを定期チェックして「予約可」が増えたときに通知する、個人開発の無料サポートツールです（非公式）<br>
-    登録したアドレスに通知メールが届きます！<br>
-    このチュートリアルでは、GoogleのGAS(Google Apps Script)の設定方法を紹介します</p>
+    <div class="container">
+        <h1>~pamoka~ DMM英会話 予約通知ツール（非公式）</h1>
+        <p>pamokaは、DMM英会話の講師ページを定期チェックして「予約可」が増えたときに通知する、個人開発の無料サポートツールです（非公式）。登録したアドレスに通知メールが届きます。</p>
+        <p>このチュートリアルでは、GoogleのGAS(Google Apps Script)の設定方法を紹介します</p>
 
-    <div class="step">
-        <h2>0. 事前準備</h2>
-        <ul>
-            <li><strong>Googleアカウント</strong>（持っていない人は <a href="https://accounts.google.com/signup" target="_blank">ここから無料で作成</a> してね！）</li>
-            <li><strong>DMM英会話の講師番号</strong></li>
-        </ul>
-        <p style="font-size: 0.9em; color: #666;">※講師のプロフィールページのURLの一番最後にある数字です。下の画像を参考にしてね</p>
-        <img src="step0_teacher_id.png" alt="講師番号の確認方法">
-    </div>
+        <div class="step">
+            <h2>0. 事前準備</h2>
+            <ul>
+                <li><strong>Googleアカウント</strong>（持っていない人は <a href="https://accounts.google.com/signup" target="_blank">ここから無料で作成</a> してね！）</li>
+                <li><strong>DMM英会話の講師番号</strong></li>
+            </ul>
+            <p style="font-size: 0.9em; color: #666;">※講師のプロフィールページのURLの一番最後にある数字です。下の画像を参考にしてね</p>
+            <img src="step0_teacher_id.png" alt="講師番号の確認方法">
+        </div>
 
-    <div class="step">
-        <h2>1. スプレッドシートを準備する</h2>
-        <p>まずは、データを記録する「台帳」を作ります。</p>
-        <p class="pink-text">【スプレッドシートの開き方】</p>
-        <p>Googleの画面右上にある「点々のマーク」から、緑色の<strong>「スプレッドシート」</strong>を選んでね。</p>
-        <img src="step1_where_spreadsheet.png" alt="スプレッドシートの開き方">
-        <p>開いたら「空白（＋マーク）」を押して新しいシートを作ります。</p>
-        <img src="step1_spreadsheet.png" alt="スプレッドシートの開き方２">
-        <p class="pink-text">※シートには何も書かなくて大丈夫。</p>
+        <div class="step">
+            <h2>1. スプレッドシートを準備する</h2>
+            <p>まずは、データを記録する「台帳」を作ります。</p>
+            <p class="pink-text">【スプレッドシートの開き方】<br>
+            Googleの画面右上にある「点々のマーク」から、緑色の<strong>「スプレッドシート」</strong>を選んでね。</p>
+            <img src="step1_where_spreadsheet.png" alt="スプレッドシートの開き方">
+            <p>開いたら「空白（＋マーク）」を押して新しいシートを作ります。</p>
+            <img src="step1_spreadsheet.png" alt="スプレッドシートの開き方２">
+            <p class="pink-text">※シートには何も書かなくて大丈夫。</p>
+        </div>
 
-       
-    </div>
+        <div class="step">
+            <h2>2. スプレッドシートIDをメモする</h2>
+            <p>プログラムを動かすために、このシートの「住所（ID）」が必要です。</p>
+            <p class="pink-text">【IDの見つけ方】</p>
+            <p>シートのURLを見てみて、<code>/d/</code> と <code>/edit</code> の間にある、長〜い英数字がIDです！</p>
+            <img src="sheet_id.png" alt="スプレッドシートIDの場所">
+            <p>これをコピーして、あとでプログラムに貼り付けます。</p>
+        </div>
 
+        <div class="step">
+            <h2>3. プログラムを貼り付ける</h2>
+            <p>1. スプレッドシートのメニューから「拡張機能」→「Apps Script」を選んでクリック。</p>
+            <img src="extend2.png" alt="GASの開き方">
+            <p>2. GASの画面が開きます。</p>
+            <img src="gas.png" alt="GASの画面">
+            <p>3. 元から書いてある文字を全部消します。</p>
+            <img src="gas_delete.png" alt="GASの画面">
+            <p>4. 下の「コードをコピーする📝」ボタンを押して、GASのコードをコピーします。</p>
+            <button class="copy-btn" onclick="copyGasCode()">コードをコピーする 📋</button>
+            <p>5. GASに貼り付けます（ショートカット：Ctrl + V）。</p>
+            <img src="gas_paste.png" alt="GASの画面">
+        </div>
 
-<div class="step">
-    <h2>2. スプレッドシートIDをメモする</h2>
-    <p>プログラムを動かすために、このシートの「住所（ID）」が必要です。</p>
-    <p class="pink-text">【IDの見つけ方】</p>
-    <p>シートのURLを見てみて、<code>/d/</code> と <code>/edit</code> の間にある、長〜い英数字がIDです！</p>
-    <img src="sheet_id.png" alt="スプレッドシートIDの場所">
-    <p>これをコピーして、あとでプログラムに貼り付けます。</p>
-</div>
+        <div class="step">
+            <h2>4. GASのコードを自分用に修正する</h2>
+            <p>1.コードの一番上にある「シートID」「メールアドレス」を自分のものに書き換えます。<br>
+「ここにスプレッドシートのIDを貼ってね」という文字を消し、2でメモしておいたスプレッドシートIDに書き換えて下さい。<br>
+「xxxxxxxxxxxx@gmail.com（ここにあなたのメールアドレスを入れてね）」という文字を消し、ご自身のメールアドレスに書き換えて下さい。<br>
+※うっかり「"」や「;」の記号を一緒に消さないように注意してください。</p>
+            <img src="change.png" alt="GASの画面">
+            <img src="yourinfo.png" alt="GASの画面">
 
+<p class="pink-text">※うっかり「"」や「;」の記号を一緒に消さないように注意してください。</p>
 
+            <p>2.コードを保存します。フロッピーの形のボタンをクリックすると保存されます。</p>
+            <img src="save.png" alt="GASのコードを保存するボタン">
+        </div>   
 
-    <div class="step">
-        <h2>3. プログラムを貼り付ける</h2>
-        <p>1. スプレッドシートのメニューから「拡張機能」→「Apps Script」を選んでクリック。</p>
-        <img src="extend2.png" alt="GASの開き方">
-        <p>2. GASの画面が開きます。</p>
-        <img src="gas.png" alt="GASの画面">
-        <p>3. 元から書いてある文字を全部消します。</p>
-       <img src="gas_delete.png" alt="GASの画面">
-        <p>4. 下のボタンを押して、GASのコードをコピーします。</p>
-        
-        <button class="copy-btn" onclick="copyGasCode()">コードをコピーする 📋</button>
-        
-        <p>5. GASに貼り付け（Ctrl + V）てね！</p>
-       <img src="gas_paste.png" alt="GASの画面">
-</div>
+        <div class="step">
+            <h2>5. プログラムの「初期設定」をする</h2>
+            <p>1. 「デバッグ」の右隣に、プログラムの名前が表示されます。その中から <code>setup</code> を選んで、「実行」ボタンを押してね。</p>
+            <img src="programname.png" alt="プログラムの名前">        
+            <img src="gas_setup_select.png" alt="setup関数の選択">
+            
+            <p class="pink-text">⚠️ ここで「承認が必要」という画面が出たら：</p>
+            <img src="auth.png" alt="承認が必要">        
+            <p>権限を確認 → 自分のアカウント →<strong> 詳細 </strong>→<strong>安全ではないページに移動</strong>→「許可」の順にクリックしてね。</p>
+           
 
+ <p class="pink-text">※自分で作ったプログラムだから安全です！怖がらないで大丈夫。</p>
+            
+            <p>①自分のアカウントを選択。</p>
+            <img src="select_your_account.png" alt="自分のアカウントを選択">
+            <p>②「詳細」をクリック。</p>
+            <img src="detail.png" alt="詳細をクリック">
+            <p>③「無題のプロジェクト（安全ではないページ）に移動」をクリック。</p>
+            <img src="click_your_account.png" alt="無題のプロジェクト（安全ではないページ）に移動をクリック">
+            <p>④ポップアップで小さな別ウィンドウが表示されます。</p>
+            <img src="box.png" alt="小さな別ウィンドウが表示される">
+            <p>⑤権限を付与する。</p>
+            <img src="allcheck.png" alt="小さな別ウィンドウが表示される">
+            <p>⑥「続行」をクリック。</p>
+            <img src="continue.png" alt="続行をクリック">
+            <p>⑦GASの画面でプログラムが開始されます。</p>
+            <img src="startrun.png" alt="GASの実行が開始されます">
+            <p>⑧スプレッドシートのタブに移動します。</p>
+            <img src="tospreadsheet.png" alt="スプレッドシートに移動">
+            <p>⑨「準備完了」の表示が出ているのでOKをクリックします。</p>
+            <img src="ready.png" alt="準備完了">
+            <p>2. スプレッドシートに「講師番号」などの見出しが自動で作られます！</p>
+            <img src="spreadsheet_ready.png" alt="準備ができたシートの様子">
+        </div>
 
+        <div class="step">
+            <h2>6. 講師を登録して監視スタート！</h2>
+            <p>1. スプレッドシートのA列に、監視したい<strong>「講師番号」</strong>を入力します。</p>
+            <img src="input.png" alt="講師番号入力">
+            <p class="pink-text">⚠️ 【大切なお願い】</p>
+            <p>登録する講師は、<strong>最大20名程度</strong>にして下さい。<br>
+            たくさん登録しすぎると、プログラムが制限エラーにかかり動かなくなる場合があります。</p>      
+        </div>
 
-    <div class="step">
-       <h2>4. GASのコードを自分用に修正する</h2>
-        <p>1.コードの一番上にある「シートID」「メールアドレス」を自分のものに書き換えます。</p>
-               <img src="change.png" alt="GASの画面">
-        <img src="yourinfo.png" alt="GASの画面">
-        <p>2.コードを保存します。フロッピーの形のボタンをクリック。</p>
-               <img src="save.png" alt="GASのコードを保存するボタン">
+        <div class="step">
+            <h2>7. 10分おきの自動監視を設定する</h2>
+            <p>最後に、プログラムが自動で動くようにタイマーをセットします。</p>
+            <p>1. GASの画面に戻って、今度は <code>setupTrigger</code> を選択。</p>
+            <img src="run2.png" alt="setupTriggerを選択している様子">
+            <p>2. <strong>「▷ 実行」</strong>ボタンを押します。</p>
+            <p class="pink-text">✨ これで設定完了！</p>
+            <p>実行ログに「⏰ 監視を開始しました！」と出れば、あとはブラウザを閉じても10分おきに勝手にチェックしてくれます。</p>
+            <img src="log.png" alt="実行ログの様子">
+            <p class="pink-text">【スプレッドシートに名前を付けよう！(任意)】</p>
+            <img src="step1_spreadsheet_name.png" alt="名前を付けて準備完了">
+            <p>※無題のままでも問題はありませんが、名前を付けておくと後でGoogleドライブから探しやすくなります。</p>
+        </div>
 
-</div>   
+        <div class="step">
+            <h2>番外編：監視を止めたいときは？</h2>
+            <p>「もう通知はいらない」という時は、GAS画面の左にある<strong>時計マーク（トリガー）</strong>を押して、設定されているトリガーをゴミ箱マークで消します。</p>
+            <img src="trigger_button.png" alt="トリガーボタン">
+            <p>設定されているタイマーが表示されるので、右端の3つの点をクリックします。</p>
+            <img src="trigger1.png" alt="トリガーの設定表示">
+            <p>「トリガーを削除」をクリックします。</p>
+            <img src="trigger2.png" alt="トリガーを削除">
+            <p>ややこしければ、スプレッドシートから講師番号を消すだけでもOKです。</p>
+        </div>
 
+        <footer>
+            Created by pamoka
+        </footer>
+    </div> <textarea id="gasCodeHidden" style="position: absolute; left: -9999px;">
 
-<div class="step">
-        <h2>5. プログラムの「初期設定」をする</h2>
-        <p>1. 「デバッグ」の右隣に、プログラムの名前が表示されます。その中から <code>setup</code> を選んで、「実行」ボタンを押してね。</p>
-       <img src="programname.png" alt="プログラムの名前">        
-<img src="gas_setup_select.png" alt="setup関数の選択">
-        
-        <p class="pink-text">⚠️ ここで「承認が必要」という画面が出たら：</p>
-        <img src="auth.png" alt="承認が必要">        
-<p>権限を確認 → 自分のアカウント →<strong> 詳細 </strong>→<strong>安全ではないページに移動</strong>→「許可」の順にクリックしてね。</p>
-        <p>※自分で作ったプログラムだから安全です！怖がらないで大丈夫。</p>
-        <p>①自分のアカウントを選択。</p>
-        <img src="select_your_account.png" alt="自分のアカウントを選択">
-        <p>②「詳細」をクリック。</p>
-        <img src="detail.png" alt="詳細をクリック">
-        <p>③「無題のプロジェクト（安全ではないページ）に移動」をクリック。</p>
-        <img src="click_your_account.png" alt="無題のプロジェクト（安全ではないページ）に移動をクリック">
-        <p>④小さな別ウィンドウが表示される。</p>
-       <img src="box.png" alt="小さな別ウィンドウが表示される">
-        <p>⑤権限を付与する。</p>
-       <img src="allcheck.png" alt="小さな別ウィンドウが表示される">
-        <p>⑥「続行」をクリック。</p>
-       <img src="continue.png" alt="続行をクリック">
-        <p>⑦GASの画面でプログラムが開始されます。</p>
-       <img src="startrun.png" alt="GASの実行が開始されます">
-        <p>⑧スプレッドシートのタブに移動します。</p>
-       <img src="tospreadsheet.png" alt="スプレッドシートに移動">
-        <p>⑨「「準備完了」の表示が出ているのでOKをクリックします。</p>
-       <img src="ready.png" alt="準備完了">
-        <p>2. スプレッドシートに「講師番号」などの見出しが自動で作られます！</p>
-        <img src="spreadsheet_ready.png" alt="準備ができたシートの様子">
-    </div>
-
-    <div class="step">
-        <h2>6. 講師を登録して監視スタート！</h2>
-        <p>1. スプレッドシートのA列に、監視したい<strong>「講師番号」</strong>を入力します。</p>
-       <img src="input.png" alt="講師番号入力">
-      
-<p class="pink-text">⚠️ 【大切なお願い】</p>
-    <p>一度に登録する講師は、<strong>最大10名程度</strong>にして下さい。<br>
-    たくさん登録しすぎるとプログラムが制限エラーにかかり動かなくなる場合があります。</p>      
-        
-    </div>
-
-
-<div class="step">
-    <h2>7. 10分おきの自動監視を設定する</h2>
-    <p>最後に、プログラムが自動で動くようにタイマーをセットします。</p>
-    <p>1. GASの画面に戻って、今度は <code>setupTrigger</code> を選択。</p>
-    <img src="run2.png" alt="setupTriggerを選択している様子">
-    <p>2. <strong>「▷ 実行」</strong>ボタンを押します。</p>
-    
-    <p class="pink-text">✨ これで設定完了！</p>
-    <p>実行ログに「⏰ 監視を開始しました！」と出れば、あとはブラウザを閉じても10分おきに勝手にチェックしてくれます。</p>
-    <img src="log.png" alt="実行ログの様子">
-        <p class="pink-text">【スプレッドシートに名前を付けよう！(任意)】</p>
-        <img src="step1_spreadsheet_name.png" alt="名前を付けて準備完了">
-        <p class="pink-text">※名前は付けなくても大丈夫ですが、次回スプレッドシートを開いた時どこにGASのコードを記載したか分からなくなるのを防ぐために、名前を付けておくと便利です。</p>
-</div>
-
-
-<div class="step">
-    <h2>番外編：監視を止めたいときは？</h2>
-    <p>「もう通知はいらない」という時は、GAS画面の左にある<strong>時計マーク（トリガー）</strong>を押して、設定されているトリガーをゴミ箱マークで消します。</p>
-    <img src="trigger_button.png" alt="トリガーボタン">
-    <p>設定されているタイマーが表示されるので、右端の3つの点をクリックします。</p>
-    <img src="trigger1.png" alt="トリガーの設定表示">
-    <p>「トリガーを削除」をクリックします。</p>
-    <img src="trigger2.png" alt="トリガーを削除">
-    <p>ややこしければ、スプレッドシートから講師番号を消すだけでもOKです。</p>
-</div>
-
-
-
-
-    
-
-    <footer style="text-align: center; margin-top: 50px; color: #888;">
-        Created by pamoka
-    </footer>
-
-    <textarea id="gasCodeHidden" style="position: absolute; left: -9999px;">
 // ==========================================
-// 設定セクション（ここだけ書き換えてね）
+// 設定セクション
 // ==========================================
 const SHEET_ID = "ここにスプレッドシートのIDを貼ってね"; 
-const NOTIFICATION_EMAIL = "xxxxxxxxxxxxx@gmail.com（ここにあなたのメールアドレスを入れてね）"; 
+const NOTIFICATION_EMAIL = "xxxxxxxxxxxxx@gmail.com"; 
 const CHECK_INTERVAL_MINUTES = 10; 
 const SHEET_NAME = "シート1";
 
@@ -179,7 +220,7 @@ function setup() {
   const sheet = SpreadsheetApp.openById(SHEET_ID).getSheets()[0];
   if (sheet.getRange("A1").getValue() === "") {
     sheet.getRange("A1:C1").setValues([["講師番号", "名前", "予約可数"]]);
-    sheet.getRange("A1:C1").setBackground("#ffe0f0").setFontWeight("bold");
+    sheet.getRange("A1:C1").setBackground("#e8f5e9").setFontWeight("bold");
     Browser.msgBox("台帳の準備ができました！A列に講師番号を入力してね。");
   }
 }
@@ -188,47 +229,57 @@ function checkTeacherAvailability() {
   try {
     const sheet = SpreadsheetApp.openById(SHEET_ID).getSheetByName(SHEET_NAME);
     const data = sheet.getDataRange().getValues();
+    
     for (let i = 1; i < data.length; i++) {
       const teacherId = String(data[i][0]).trim();
       let teacherName = String(data[i][1]).trim();
       const lastCount = data[i][2] === "" ? null : Number(data[i][2]);
+      
       if (!teacherId || teacherId === "") continue; 
+
       try {
         const url = `https://eikaiwa.dmm.com/teacher/index/${teacherId}/`;
         const response = UrlFetchApp.fetch(url, {
           muteHttpExceptions: true,
-          headers: { "User-Agent": "Mozilla/5.0" },
-          timeout: 10000
+          headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }
         });
+
         if (response.getResponseCode() !== 200) continue;
         const html = response.getContentText();
+
+        // 講師名の取得
         if (!teacherName || teacherName === "" || teacherName === "undefined") {
           const titleMatch = html.match(/<title>([\s\S]*?)\s-\sDMM英会話<\/title>/i);
           teacherName = (titleMatch && titleMatch[1]) ? titleMatch[1].trim() : "講師 " + teacherId;
           sheet.getRange(i + 1, 2).setValue(teacherName);
-          sendRegistrationNotice(teacherId, teacherName);
         }
+
+        // 全体の「予約可」をカウント
         const matches = html.match(/予約可/g);
-        const currentCount = matches ? matches.length : 0;
+        let rawCount = matches ? matches.length : 0;
+
+        // 【みわちゃん式・引き算ロジック】
+        // 常に2つ多いから、2を引く。マイナスになったら0にする。
+        let currentCount = rawCount - 2;
+        if (currentCount < 0) currentCount = 0;
+
+        // 通知判定：増えたときだけメール
         if (lastCount !== null && currentCount > lastCount) {
           sendNotification(teacherId, teacherName, lastCount, currentCount);
         }
+
+        // シートを更新
         sheet.getRange(i + 1, 3).setValue(currentCount);
         Utilities.sleep(1000);
+
       } catch (e) { console.error(e); }
     }
   } catch (e) { Logger.log(e); }
 }
 
-function sendRegistrationNotice(teacherId, teacherName) {
-  const subject = `【監視開始】${teacherName}をリストに登録したよ！`;
-  const message = `新しい講師「${teacherName}（${teacherId}）」の10分おき監視を開始しました！`;
-  GmailApp.sendEmail(NOTIFICATION_EMAIL, subject, message);
-}
-
 function sendNotification(teacherId, teacherName, prevCount, currentCount) {
-  const subject = `【DMM英会話】${teacherName}（${teacherId}）レッスン開講通知`;
-  const message = `${teacherName}にレッスン予約枠が追加されました！\n前回: ${prevCount}件 → 現在: ${currentCount}件\nhttps://eikaiwa.dmm.com/teacher/index/${teacherId}/`;
+  const subject = `【DMM通知】${teacherName}（${teacherId}）に空きが出たよ！`;
+  const message = `${teacherName}先生の予約枠が追加されました！\n現在の空き：${currentCount}件（前回：${prevCount}件）\nhttps://eikaiwa.dmm.com/teacher/index/${teacherId}/`;
   GmailApp.sendEmail(NOTIFICATION_EMAIL, subject, message);
 }
 
@@ -236,8 +287,16 @@ function setupTrigger() {
   const triggers = ScriptApp.getProjectTriggers();
   triggers.forEach(trigger => ScriptApp.deleteTrigger(trigger));
   ScriptApp.newTrigger("checkTeacherAvailability").timeBased().everyMinutes(CHECK_INTERVAL_MINUTES).create();
-  Logger.log("⏰ 監視を開始しました！");
-}</textarea>
+  Logger.log("⏰ 10分おきの定期監視を開始しました！");
+}
+
+
+
+ 
+
+
+
+</textarea>
 
     <script>
         function copyGasCode() {

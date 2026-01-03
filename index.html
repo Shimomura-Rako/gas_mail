@@ -63,12 +63,6 @@
     </style>
 </head>
 
-
-
-
-
-
-
 <body>
     <div class="container">
         <h1>~pamoka~ DMM英会話 予約通知ツール（非公式）</h1>
@@ -128,11 +122,11 @@
             <img src="change.png" alt="GASの画面">
             <img src="yourinfo.png" alt="GASの画面">
 
-<p class="pink-text">※うっかり「"」や「;」の記号を一緒に消さないように注意してください。</p>
+            <p class="pink-text">※うっかり「"」や「;」の記号を一緒に消さないように注意してください。</p>
 
             <p>2.コードを保存します。フロッピーの形のボタンをクリックすると保存されます。</p>
             <img src="save.png" alt="GASのコードを保存するボタン">
-        </div>   
+        </div>
 
         <div class="step">
             <h2>5. プログラムの「初期設定」をする</h2>
@@ -143,9 +137,8 @@
             <p class="pink-text">⚠️ ここで「承認が必要」という画面が出たら：</p>
             <img src="auth.png" alt="承認が必要">        
             <p>権限を確認 → 自分のアカウント →<strong> 詳細 </strong>→<strong>安全ではないページに移動</strong>→「許可」の順にクリックしてね。</p>
-           
-
- <p class="pink-text">※自分で作ったプログラムだから安全です！怖がらないで大丈夫。</p>
+            
+            <p class="pink-text">※自分で作ったプログラムだから安全です！怖がらないで大丈夫。</p>
             
             <p>①自分のアカウントを選択。</p>
             <img src="select_your_account.png" alt="自分のアカウントを選択">
@@ -179,13 +172,13 @@
         </div>
 
         <div class="step">
-            <h2>7. 10分おきの自動監視を設定する</h2>
+            <h2>7. 定期自動監視を設定する</h2>
             <p>最後に、プログラムが自動で動くようにタイマーをセットします。</p>
             <p>1. GASの画面に戻って、今度は <code>setupTrigger</code> を選択。</p>
             <img src="run2.png" alt="setupTriggerを選択している様子">
             <p>2. <strong>「▷ 実行」</strong>ボタンを押します。</p>
             <p class="pink-text">✨ これで設定完了！</p>
-            <p>実行ログに「⏰ 監視を開始しました！」と出れば、あとはブラウザを閉じても10分おきに勝手にチェックしてくれます。</p>
+            <p>実行ログに「⏰ 定期監視を開始しました。」と出れば、あとはブラウザを閉じても設定した間隔（初期設定は10分）で勝手にチェックしてくれます。</p>
             <img src="log.png" alt="実行ログの様子">
             <p class="pink-text">【スプレッドシートに名前を付けよう！(任意)】</p>
             <img src="step1_spreadsheet_name.png" alt="名前を付けて準備完了">
@@ -206,8 +199,9 @@
         <footer>
             Created by pamoka
         </footer>
-    </div> <textarea id="gasCodeHidden" style="position: absolute; left: -9999px;">
+    </div>
 
+    <textarea id="gasCodeHidden" style="position: absolute; left: -9999px;">
 // ==========================================
 // 設定セクション
 // ==========================================
@@ -221,7 +215,7 @@ function setup() {
   if (sheet.getRange("A1").getValue() === "") {
     sheet.getRange("A1:C1").setValues([["講師番号", "名前", "予約可数"]]);
     sheet.getRange("A1:C1").setBackground("#e8f5e9").setFontWeight("bold");
-    Browser.msgBox("台帳の準備ができました！A列に講師番号を入力してね。");
+    Browser.msgBox("準備が完了しました。A列に講師番号を入力してください。");
   }
 }
 
@@ -238,7 +232,7 @@ function checkTeacherAvailability() {
       if (!teacherId || teacherId === "") continue; 
 
       try {
-        const url = `https://eikaiwa.dmm.com/teacher/index/${teacherId}/`;
+        const url = "https://eikaiwa.dmm.com/teacher/index/" + teacherId + "/";
         const response = UrlFetchApp.fetch(url, {
           muteHttpExceptions: true,
           headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }
@@ -248,7 +242,7 @@ function checkTeacherAvailability() {
         const html = response.getContentText();
 
         // 講師名の取得
-        if (!teacherName || teacherName === "" || teacherName === "undefined") {
+        if (!teacherName || teacherName === "" || teacherName === "undefined" || teacherName.includes("講師詳細")) {
           const titleMatch = html.match(/<title>([\s\S]*?)\s-\sDMM英会話<\/title>/i);
           teacherName = (titleMatch && titleMatch[1]) ? titleMatch[1].trim() : "講師 " + teacherId;
           sheet.getRange(i + 1, 2).setValue(teacherName);
@@ -258,8 +252,7 @@ function checkTeacherAvailability() {
         const matches = html.match(/予約可/g);
         let rawCount = matches ? matches.length : 0;
 
-        // 【みわちゃん式・引き算ロジック】
-        // 常に2つ多いから、2を引く。マイナスになったら0にする。
+        // システム上の予備カウント(2個)を除外して実数を算出
         let currentCount = rawCount - 2;
         if (currentCount < 0) currentCount = 0;
 
@@ -278,8 +271,8 @@ function checkTeacherAvailability() {
 }
 
 function sendNotification(teacherId, teacherName, prevCount, currentCount) {
-  const subject = `【DMM通知】${teacherName}（${teacherId}）に空きが出たよ！`;
-  const message = `${teacherName}先生の予約枠が追加されました！\n現在の空き：${currentCount}件（前回：${prevCount}件）\nhttps://eikaiwa.dmm.com/teacher/index/${teacherId}/`;
+  const subject = "【DMM通知】" + teacherName + "先生の空きが出ました";
+  const message = teacherName + "先生の予約枠が追加されました。\n現在の空き：" + currentCount + "件（前回：" + prevCount + "件）\n\n詳細・予約はこちら：\nhttps://eikaiwa.dmm.com/teacher/index/" + teacherId + "/";
   GmailApp.sendEmail(NOTIFICATION_EMAIL, subject, message);
 }
 
@@ -287,15 +280,8 @@ function setupTrigger() {
   const triggers = ScriptApp.getProjectTriggers();
   triggers.forEach(trigger => ScriptApp.deleteTrigger(trigger));
   ScriptApp.newTrigger("checkTeacherAvailability").timeBased().everyMinutes(CHECK_INTERVAL_MINUTES).create();
-  Logger.log("⏰ 10分おきの定期監視を開始しました！");
+  Logger.log("⏰ 定期監視を開始しました。");
 }
-
-
-
- 
-
-
-
 </textarea>
 
     <script>
@@ -304,7 +290,7 @@ function setupTrigger() {
             copyText.select();
             copyText.setSelectionRange(0, 99999);
             document.execCommand("copy");
-            alert("コピーしました！Apps Scriptの画面に貼り付けてね。");
+            alert("コピーしました！Apps Scriptの画面に貼り付けてください。");
         }
     </script>
 </body>
