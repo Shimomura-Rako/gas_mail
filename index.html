@@ -123,7 +123,9 @@
         <p>1. スプレッドシートのA列に、監視したい<strong>「講師番号」</strong>を入力します。</p>
        <img src="input.png" alt="講師番号入力">
       
-      
+<p class="pink-text">⚠️ 【大切なお願い】</p>
+    <p>一度に登録する講師は、<strong>最大10名程度</strong>にして下さい。<br>
+    たくさん登録しすぎるとプログラムが制限エラーにかかり動かなくなる場合があります。</p>      
         
     </div>
 
@@ -133,24 +135,23 @@
     <p>最後に、プログラムが自動で動くようにタイマーをセットします。</p>
     <p>1. GASの画面に戻って、今度は <code>setupTrigger</code> を選択。</p>
     <img src="run2.png" alt="setupTriggerを選択している様子">
-    <p>2. 左側の<strong>「▷ 実行」</strong>ボタンを押します。</p>
+    <p>2. <strong>「▷ 実行」</strong>ボタンを押します。</p>
     
     <p class="pink-text">✨ これで設定完了！</p>
     <p>実行ログに「⏰ 監視を開始しました！」と出れば、あとはブラウザを閉じても10分おきに勝手にチェックしてくれます。</p>
-
+    <img src="log.png" alt="実行ログの様子">
         <p class="pink-text">【スプレッドシートに名前を付けよう！(任意)】</p>
-<ら準備完了。</p>
         <img src="step1_spreadsheet_name.png" alt="名前を付けて準備完了">
-        <p class="pink-text">※名前は付けなくても大丈夫ですが、次回スプレッドシートを開く時どのシートにGASのコードを記載したか分からなくなるのを防ぐために名前を付けておくと便利です。</p>
+        <p class="pink-text">※名前は付けなくても大丈夫ですが、次回スプレッドシートを開いた時どこにGASのコードを記載したか分からなくなるのを防ぐために、名前を付けておくと便利です。</p>
 </div>
 
 
 <div class="step">
     <h2>番外編：監視を止めたいときは？</h2>
     <p>「もう通知はいらない」という時は、GAS画面の左にある<strong>時計マーク（トリガー）</strong>を押して、設定されているトリガーをゴミ箱マークで消します。</p>
-    <img src="trigger_button" alt="トリガーボタン">
-    <img src="trigger1" alt="トリガーの設定表示">
-    <img src="trigger2" alt="トリガーを削除">
+    <img src="trigger_button.png" alt="トリガーボタン">
+    <img src="trigger1.png" alt="トリガーの設定表示">
+    <img src="trigger2.png" alt="トリガーを削除">
     <p>スプレッドシートの講師番号を消すだけでもOKです。</p>
 </div>
 
