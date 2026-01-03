@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>~pamoka~ DMM英会話 予約通知ツール（非公式）</title>
     <style>
-        /* ここで背景画像を設定したわよ！ */
+        /* 背景画像をbkg.pngに設定 */
         body { 
             font-family: 'Helvetica Neue', Arial, sans-serif; 
             line-height: 1.8; 
             color: #333; 
-            background-image: url('bkg.png'); /* みわちゃんの作った画像をここに！ */
+            background-image: url('bkg.png'); 
             background-size: cover; 
-            background-attachment: fixed; /* 背景を固定してオシャレに */
+            background-attachment: fixed; 
             background-position: center;
             margin: 0;
             padding: 40px 20px; 
@@ -20,50 +21,59 @@
             justify-content: center;
         }
 
-        /* 記事本体：白いカードにして背景を透かさないわ */
+        /* 記事本体：白いカード */
         .container {
             max-width: 1000px; 
             width: 100%;
-            background-color: rgba(255, 255, 255, 0.95); /* ほんの少しだけ透かして馴染ませたわ */
+            background-color: rgba(255, 255, 255, 0.95); 
             padding: 40px;
             border-radius: 20px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1); 
         }
 
-        h1 { color: #d81b60; text-align: center; border-bottom: 3px solid #d81b60; padding-bottom: 10px; margin-top: 0; }
-        h2 { color: #ad1457; background: #fce4ec; padding: 10px; border-left: 5px solid #ad1457; margin-top: 30px; }
+        /* タイトルと見出しの色をグリーンに変更 */
+        h1 { color: #2e7d32; text-align: center; border-bottom: 3px solid #2e7d32; padding-bottom: 10px; margin-top: 0; }
+        h2 { color: #1b5e20; background: #e8f5e9; padding: 10px; border-left: 5px solid #2e7d32; margin-top: 30px; }
         
         .step { 
             background: #ffffff; 
             padding: 20px; 
             border-radius: 12px; 
             margin-bottom: 20px; 
-            border: 1px solid #ffecf2;
+            border: 1px solid #e0e0e0;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        .pink-text { color: #d81b60; font-weight: bold; }
+        /* 強調テキストの色をグリーンに変更 */
+        .pink-text { color: #2e7d32; font-weight: bold; }
         code { background: #eee; padding: 2px 5px; border-radius: 4px; font-weight: bold; }
-        img { width: 100%; max-width: 600px; display: block; margin: 15px auto; border: 2px solid #ffc1e3; border-radius: 8px; }
         
+        /* 画像の枠線をグリーンに変更 */
+        img { width: 100%; max-width: 600px; display: block; margin: 15px auto; border: 2px solid #c8e6c9; border-radius: 8px; }
+        
+        /* コピーボタンの色をグリーンに変更 */
         .copy-btn { 
-            background-color: #d81b60; color: white; border: none; padding: 12px 24px; 
+            background-color: #4caf50; color: white; border: none; padding: 12px 24px; 
             border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1.1em; 
             margin: 15px 0; transition: 0.3s; width: 100%; max-width: 300px; display: block; margin-left: auto; margin-right: auto;
         }
-        .copy-btn:hover { background-color: #ad1457; }
+        .copy-btn:hover { background-color: #388e3c; }
         
         footer { text-align: center; margin-top: 50px; color: #888; font-size: 0.9em; }
     </style>
 </head>
 
 
+
+
+
+
+
 <body>
     <div class="container">
         <h1>~pamoka~ DMM英会話 予約通知ツール（非公式）</h1>
-        <p>pamokaは、DMM英会話の講師ページを定期チェックして「予約可」が増えたときに通知する、個人開発の無料サポートツールです（非公式）<br>
-        登録したアドレスに通知メールが届きます！<br>
-        このチュートリアルでは、GoogleのGAS(Google Apps Script)の設定方法を紹介します</p>
+        <p>pamokaは、DMM英会話の講師ページを定期チェックして「予約可」が増えたときに通知する、個人開発の無料サポートツールです（非公式）。登録したアドレスに通知メールが届きます。</p>
+        <p>このチュートリアルでは、GoogleのGAS(Google Apps Script)の設定方法を紹介します</p>
 
         <div class="step">
             <h2>0. 事前準備</h2>
@@ -78,8 +88,8 @@
         <div class="step">
             <h2>1. スプレッドシートを準備する</h2>
             <p>まずは、データを記録する「台帳」を作ります。</p>
-            <p class="pink-text">【スプレッドシートの開き方】</p>
-            <p>Googleの画面右上にある「点々のマーク」から、緑色の<strong>「スプレッドシート」</strong>を選んでね。</p>
+            <p class="pink-text">【スプレッドシートの開き方】<br>
+            Googleの画面右上にある「点々のマーク」から、緑色の<strong>「スプレッドシート」</strong>を選んでね。</p>
             <img src="step1_where_spreadsheet.png" alt="スプレッドシートの開き方">
             <p>開いたら「空白（＋マーク）」を押して新しいシートを作ります。</p>
             <img src="step1_spreadsheet.png" alt="スプレッドシートの開き方２">
