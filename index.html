@@ -273,10 +273,10 @@ function sendNotification(email, teacherId, teacherName, currentCount, isFirstTi
   let subject, message;
   if (isFirstTime) {
     subject = "【DMM通知】監視を開始しました（" + teacherName + "先生）";
-    message = teacherName + "先生（ID:" + teacherId + "）の予約監視を開始しました。\\n現在の空き状況：" + currentCount + "件\\n\\nhttps://eikaiwa.dmm.com/teacher/index/" + teacherId + "/";
+    message = teacherName + "先生（ID:" + teacherId + "）の予約監視を開始しました。\n現在の空き状況：" + currentCount + "件\n\nhttps://eikaiwa.dmm.com/teacher/index/" + teacherId + "/";
   } else {
     subject = "【DMM通知】" + teacherName + "先生の空きが出ました";
-    message = teacherName + "先生の予約枠が追加されました！\\n現在の空き状況：" + currentCount + "件\\n\\n予約はこちら：\\nhttps://eikaiwa.dmm.com/teacher/index/" + teacherId + "/";
+    message = teacherName + "先生の予約枠が追加されました！\n現在の空き状況：" + currentCount + "件\n\n予約はこちら：\nhttps://eikaiwa.dmm.com/teacher/index/" + teacherId + "/";
   }
   GmailApp.sendEmail(email, subject, message);
 }
@@ -285,6 +285,7 @@ function setupTrigger() {
   const triggers = ScriptApp.getProjectTriggers();
   triggers.forEach(trigger => ScriptApp.deleteTrigger(trigger));
   ScriptApp.newTrigger("checkTeacherAvailability").timeBased().everyMinutes(10).create();
+Logger.log("⏰ 定期監視を開始しました。");
 }
 </textarea>
 
