@@ -207,6 +207,7 @@
             Created by pamoka
         </footer>
     </div> <textarea id="gasCodeHidden" style="position: absolute; left: -9999px;">
+
 // ==========================================
 // 設定セクション
 // ==========================================
@@ -240,46 +241,45 @@ function checkTeacherAvailability() {
         const url = `https://eikaiwa.dmm.com/teacher/index/${teacherId}/`;
         const response = UrlFetchApp.fetch(url, {
           muteHttpExceptions: true,
-          headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" },
-          timeout: 15000 // 少し余裕を持たせたわ
+          headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }
         });
 
         if (response.getResponseCode() !== 200) continue;
         const html = response.getContentText();
 
-        // 講師名の取得（初回のみ）
+        // 講師名の取得
         if (!teacherName || teacherName === "" || teacherName === "undefined") {
           const titleMatch = html.match(/<title>([\s\S]*?)\s-\sDMM英会話<\/title>/i);
           teacherName = (titleMatch && titleMatch[1]) ? titleMatch[1].trim() : "講師 " + teacherId;
           sheet.getRange(i + 1, 2).setValue(teacherName);
         }
 
-        // 【ここが最重要の修正点！】
-        // 予約ボタンのタグ <a ... class="... blank ...">予約可</a> だけを正確に抽出
-        // 幽霊カウントを防ぐために「blank」というクラス名が含まれるものに限定したわ
-        const regex = /<a[^>]*class="[^"]*?blank[^"]*"[^>]*>予約可<\/a>/g;
-        const matches = html.match(regex);
-        const currentCount = matches ? matches.length : 0;
+        // 全体の「予約可」をカウント
+        const matches = html.match(/予約可/g);
+        let rawCount = matches ? matches.length : 0;
+
+        // 【みわちゃん式・引き算ロジック】
+        // 常に2つ多いから、2を引く。マイナスになったら0にする。
+        let currentCount = rawCount - 2;
+        if (currentCount < 0) currentCount = 0;
 
         // 通知判定：増えたときだけメール
         if (lastCount !== null && currentCount > lastCount) {
           sendNotification(teacherId, teacherName, lastCount, currentCount);
         }
 
-        // スプレッドシートの数値を更新
+        // シートを更新
         sheet.getRange(i + 1, 3).setValue(currentCount);
-        
-        // サーバーに負荷をかけないよう、少し待機
         Utilities.sleep(1000);
 
-      } catch (e) { console.error("講師 " + teacherId + " でエラー: " + e); }
+      } catch (e) { console.error(e); }
     }
-  } catch (e) { Logger.log("全体エラー: " + e); }
+  } catch (e) { Logger.log(e); }
 }
 
 function sendNotification(teacherId, teacherName, prevCount, currentCount) {
-  const subject = `【DMM通知】${teacherName}（${teacherId}）に空きが出たわよ！`;
-  const message = `${teacherName}先生の予約枠が追加されました！\n\n現在の空き：${currentCount}件（前回：${prevCount}件）\n予約はこちらから急いで！\nhttps://eikaiwa.dmm.com/teacher/index/${teacherId}/`;
+  const subject = `【DMM通知】${teacherName}（${teacherId}）に空きが出たよ！`;
+  const message = `${teacherName}先生の予約枠が追加されました！\n現在の空き：${currentCount}件（前回：${prevCount}件）\nhttps://eikaiwa.dmm.com/teacher/index/${teacherId}/`;
   GmailApp.sendEmail(NOTIFICATION_EMAIL, subject, message);
 }
 
@@ -289,6 +289,11 @@ function setupTrigger() {
   ScriptApp.newTrigger("checkTeacherAvailability").timeBased().everyMinutes(CHECK_INTERVAL_MINUTES).create();
   Logger.log("⏰ 10分おきの定期監視を開始しました！");
 }
+
+
+
+ 
+
 
 
 </textarea>
