@@ -38,9 +38,13 @@
         <p class="pink-text">【スプレッドシートの開き方】</p>
         <p>Googleの画面右上にある「点々のマーク」から、緑色の<strong>「スプレッドシート」</strong>を選んでね。</p>
         <img src="step1_where_spreadsheet.png" alt="スプレッドシートの開き方">
-        <p>開いたら「空白（＋マーク）」を押して新しいシートを作るだけで準備完了！</p>
+        <p>開いたら「空白（＋マーク）」を押して新しいシートを作ります。</p>
         <img src="step1_spreadsheet.png" alt="スプレッドシートの開き方２">
         <p class="pink-text">※シートには何も書かなくて大丈夫。</p>
+
+        <p class="pink-text">【名前を付けよう！】</p>
+        <p>左上の「無題のスプレッドシート」という文字をクリックして、<strong>「pamoka」</strong>など好きな名前を付けたら準備完了！</p>
+        <img src="step1_spreadsheet_name.png" alt="名前を付けて準備完了">
     </div>
 
 
@@ -93,23 +97,23 @@
         <img src="auth.png" alt="承認が必要">        
 <p>権限を確認 → 自分のアカウント →<strong> 詳細 </strong>→<strong>安全ではないページに移動</strong>→「許可」の順にクリックしてね。</p>
         <p>※自分で作ったプログラムだから安全です！怖がらないで大丈夫。</p>
-        <p>自分のアカウントを選択。</p>
+        <p>①自分のアカウントを選択。</p>
         <img src="select_your_account.png" alt="自分のアカウントを選択">
-        <p>「詳細」をクリック。</p>
+        <p>②「詳細」をクリック。</p>
         <img src="detail.png" alt="詳細をクリック">
-        <p>「無題のプロジェクト（安全ではないページ）に移動」をクリック。</p>
+        <p>③「無題のプロジェクト（安全ではないページ）に移動」をクリック。</p>
         <img src="click_your_account.png" alt="無題のプロジェクト（安全ではないページ）に移動をクリック">
-        <p>小さな別ウィンドウが表示される。</p>
+        <p>④小さな別ウィンドウが表示される。</p>
        <img src="box.png" alt="小さな別ウィンドウが表示される">
-        <p>権限を付与する。</p>
+        <p>⑤権限を付与する。</p>
        <img src="allcheck.png" alt="小さな別ウィンドウが表示される">
-        <p>「続行」をクリック。</p>
+        <p>⑥「続行」をクリック。</p>
        <img src="continue.png" alt="続行をクリック">
-        <p>GASの画面でプログラムが開始されます。</p>
+        <p>⑦GASの画面でプログラムが開始されます。</p>
        <img src="startrun.png" alt="GASの実行が開始されます">
-        <p>スプレッドシートのタブに移動します。</p>
+        <p>⑧スプレッドシートのタブに移動します。</p>
        <img src="tospreadsheet.png" alt="スプレッドシートに移動">
-        <p>「準備完了」の表示が出ているのでOKをクリックします。</p>
+        <p>⑨「「準備完了」の表示が出ているのでOKをクリックします。</p>
        <img src="ready.png" alt="準備完了">
         <p>2. スプレッドシートに「講師番号」などの見出しが自動で作られます！</p>
         <img src="spreadsheet_ready.png" alt="準備ができたシートの様子">
@@ -117,26 +121,37 @@
 
     <div class="step">
         <h2>6. 講師を登録して監視スタート！</h2>
-        <p>1. スプレッドシートのA列に、監視したい<strong>「講師番号」</strong>を入力してね。</p>
-        <p>2. GASの画面に戻って、今度は <code>setupTrigger</code> を選んで「実行」をクリック！</p>
-        <img src="gas_trigger_select.png" alt="トリガー設定の実行">
+        <p>1. スプレッドシートのA列に、監視したい<strong>「講師番号」</strong>を入力します。</p>
+       <img src="input.png" alt="講師番号入力">
+      
+      
         
-        <p>これで完了！ブラウザを閉じても、10分おきに自動でチェックしてメールをくれるわよ。お疲れ様でした✨</p>
     </div>
 
 
+<div class="step">
+    <h2>7. 10分おきの自動監視を設定する</h2>
+    <p>最後に、プログラムが自動で動くようにタイマーをセットします。</p>
+    <p>1. GASの画面に戻って、今度は <code>setupTrigger</code> を選択。</p>
+    <img src="run2.png" alt="setupTriggerを選択している様子">
+    <p>2. 左側の<strong>「▷ 実行」</strong>ボタンを押します。</p>
+    
+    <p class="pink-text">✨ これで設定完了！</p>
+    <p>実行ログに「⏰ 監視を開始しました！」と出れば、あとはブラウザを閉じても10分おきに勝手にチェックしてくれます。</p>
+</div>
 
 
+<div class="step">
+    <h2>番外編：監視を止めたいときは？</h2>
+    <p>「もう通知はいらない」という時は、GAS画面の左にある<strong>時計マーク（トリガー）</strong>を押して、設定されているトリガーをゴミ箱マークで消します。</p>
+    <img src="trigger_button" alt="トリガーボタン">
+    <img src="trigger1" alt="トリガーの設定表示">
+    <img src="trigger2" alt="トリガーを削除">
+    <p>スプレッドシートの講師番号を消すだけでもOKです。</p>
+</div>
 
 
-
-
-
-
-
-        <h2>3. 仕上げ（トリガー設定）</h2>
-        <p>最後に<code>setupTrigger</code>という関数を選んで実行！これで自動監視がスタートします。</p>
-    </div>
+    
 
     <footer style="text-align: center; margin-top: 50px; color: #888;">
         Created by pamoka
