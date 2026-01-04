@@ -78,10 +78,10 @@
         padding: 20px; /* カードの中の余白も少し詰めるわよ */
     }
     h1 {
-        font-size: 1.5rem; /* タイトルの字を少し小さくするわ */
+        font-size: 1.5rem; /* タイトルの字を少し小さく */
     }
     h2 {
-        font-size: 1.2rem; /* 見出しも合わせて調整よ */
+        font-size: 1.2rem; /* 見出しも合わせて調整 */
     }
 }
 
@@ -245,7 +245,7 @@ function setup() {
   emailCell.setFontColor("#d32f2f");
   emailCell.setBorder(true, true, true, true, false, false, "#d32f2f", SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
 
-  sheet.getRange("A2").setValue("※B1に入力したアドレスに通知が届きます。2行目は変更しないでください。").setFontColor("#666").setFontSize(9);
+  sheet.getRange("A2").setValue("※B1に入力したアドレスに通知が届きます").setFontColor("#666").setFontSize(9);
 
   // 4行目：見出し
   sheet.getRange("A4:C4").setValues([["講師番号を入力", "講師名（自動入力）", "現在の予約可数（自動入力）"]]);
