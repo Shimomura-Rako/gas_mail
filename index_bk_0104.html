@@ -247,25 +247,10 @@ function setup() {
   sheet.getRange("A4:C4").setValues([["講師番号を入力", "講師名（自動入力）", "現在の予約可数（自動入力）"]]);
   sheet.getRange("A4:C4").setBackground("#2e7d32").setFontColor("white").setFontWeight("bold");
   
-    // 入力可能エリア（A5:A24 まで20人分）
-  const inputRange = sheet.getRange("A5:A24");
-  inputRange.setBackground("#f9f9f9").setBorder(true, true, true, true, false, false, "#ccc", SpreadsheetApp.BorderStyle.DOTTED);
+  // 入力エリアの装飾
+  sheet.getRange("A5:A25").setBackground("#f9f9f9").setBorder(true, true, true, true, false, false, "#ccc", SpreadsheetApp.BorderStyle.DOTTED);
 
-  // --- 20人制限のデコレーション ---
-  // 25行目（21人目）以降をグレーアウト
-  const maxRows = sheet.getMaxRows();
-  sheet.getRange(25, 1, maxRows - 24, 3).setBackground("#dcdcdc");
-  sheet.getRange("A25").setValue("↑ 登録は20人までよ！これより下は使えません ↑").setFontColor("#999").setFontStyle("italic");
-  
-  // 入力規則で25行目以降の入力を拒否
-  const rule = SpreadsheetApp.newDataValidation()
-    .withFormula1("=FALSE")
-    .setAllowInvalid(false)
-    .setHelpText("講師登録は20名までよ！これ以上はエラーの原因になるからダメよ。")
-    .build();
-  sheet.getRange(25, 1, maxRows - 24, 1).setDataValidation(rule);
-
-  Browser.msgBox("準備完了！ピンクの枠にメールアドレスを入力してください。21行目以降は「愛の制限」で入力できなくしておいたわ！");
+  Browser.msgBox("準備完了！ピンクの枠にメールアドレスを入力してください");
 }
 
 
