@@ -228,16 +228,16 @@ A列を消す場合は、B列・C列も合わせて削除してください(誤�
 function setup() {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
   
-  // シートの初期化
+  // シートを一度リセット
   sheet.clear();
   sheet.clearConditionalFormatRules();
   
   // 列の幅を調整
-  sheet.setColumnWidth(1, 250); // A列：講師番号
-  sheet.setColumnWidth(2, 300); // B列：講師名
-  sheet.setColumnWidth(3, 150); // C列：予約可数
+  sheet.setColumnWidth(1, 250); // 講師番号
+  sheet.setColumnWidth(2, 300); // 講師名
+  sheet.setColumnWidth(3, 150); // 予約可数
 
-  // 1行目：メールアドレス設定エリア
+  // 1行目：メールアドレス設定
   sheet.getRange("A1").setValue("通知用メールアドレスを入力 →").setBackground("#e8f5e9").setFontWeight("bold");
   const emailCell = sheet.getRange("B1");
   emailCell.setValue("【ここにメールアドレスを入力】");
@@ -245,7 +245,7 @@ function setup() {
   emailCell.setFontColor("#d32f2f");
   emailCell.setBorder(true, true, true, true, false, false, "#d32f2f", SpreadsheetApp.BorderStyle.SOLID_MEDIUM);
 
-  sheet.getRange("A2").setValue("※B1に入力したアドレスに通知が届きます").setFontColor("#666").setFontSize(9);
+  sheet.getRange("A2").setValue("※B1に入力したアドレスに通知が届きます。2行目は変更しないでください。").setFontColor("#666").setFontSize(9);
 
   // 4行目：見出し
   sheet.getRange("A4:C4").setValues([["講師番号を入力", "講師名（自動入力）", "現在の予約可数（自動入力）"]]);
@@ -255,27 +255,21 @@ function setup() {
   const inputRange = sheet.getRange("A5:A24");
   inputRange.setBackground("#f9f9f9").setBorder(true, true, true, true, false, false, "#ccc", SpreadsheetApp.BorderStyle.DOTTED);
 
-  // --- 20人制限の設定 ---
+  // --- 20人制限の設定（エラー修正版） ---
   const maxRows = sheet.getMaxRows();
-  
-  // 25行目以降をグレーアウト
   sheet.getRange(25, 1, maxRows - 24, 3).setBackground("#dcdcdc");
   sheet.getRange("A25").setValue("↑ 登録上限は20名です。これ以降の行は使用できません ↑").setFontColor("#999").setFontStyle("italic");
   
-  // 入力規則：25行目以降の入力を制限
+  // 修正ポイント：withFormula1 を使わずに「特定の文字以外はエラー」にする手法に変更
   const rule = SpreadsheetApp.newDataValidation()
-    .requireTextEqualTo("上限は20名までです") // 制限用のダミーテキスト
-    .setAllowInvalid(false) // 不正な入力を拒否
+    .requireTextEqualTo("上限は20名までです") 
+    .setAllowInvalid(false)
     .setHelpText("講師の登録上限は20名です。これ以上の登録は動作の安定性を損なう可能性があるため制限されています。")
     .build();
   sheet.getRange(25, 1, maxRows - 24, 1).setDataValidation(rule);
 
-Browser.msgBox("セットアップが完了しました。\n\nピンク色の枠に通知用メールアドレスを入力し、5行目から講師番号を入力してください");
-
+  Browser.msgBox("セットアップが完了しました。\n\nピンク色の枠に通知用メールアドレスを入力し、5行目から講師番号を入力してください。\n※登録上限は20名に制限されています。");
 }
-
-  
-
 
 
 
